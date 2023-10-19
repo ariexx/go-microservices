@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  broker-service:
+    build:
+      context: ../broker-service
+      dockerfile: broker-service.dockerfile
+    restart: always
+    ports:
+      - "8080:3000"
+    deploy:
+      mode: replicated
+      replicas: 1
+
+  authentication-service:
+    build:
+      context: ../authentication-service
+      dockerfile: authentication-service.dockerfile
+    restart: always
+    ports:
+      - "8081:3000"
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - mysql
+    environment:
+      DSN: "admin:password@tcp(mysql_auth:3306)/users?charset=utf8&parseTime=True&loc=Local"
+  mysql:
+    image: 'mysql:latest'
+    container_name: 'mysql_auth'
+    ports:
+      - "3306:3306"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+        - MYSQL_DATABASE=users
+        - MYSQL_USER=admin
+        - MYSQL_PASSWORD=password
+        - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
