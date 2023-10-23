@@ -1,11 +1,12 @@
 package main
 
 import (
+	"broker_service/cmd/pkg/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-const port = ":3000"
+const port = ":80"
 
 func main() {
 
@@ -19,7 +20,7 @@ func main() {
 		MaxAge:           300,
 	}))
 
-	routes(app)
+	routes.InjectRoutes(app)
 
 	listen := app.Listen(port)
 	if listen != nil {

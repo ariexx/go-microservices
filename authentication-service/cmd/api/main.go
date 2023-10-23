@@ -17,7 +17,7 @@ type Config struct {
 	db *gorm.DB
 }
 
-const port = ":3000"
+const port = ":80"
 
 func main() {
 	//TODO connect to database
