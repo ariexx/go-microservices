@@ -25,6 +25,8 @@ func HandleSubmission(ctx *fiber.Ctx) error {
 	switch requestPayload.Action {
 	case "auth":
 		return authenticate(ctx)
+	case "order":
+		return postOrder(ctx)
 	default:
 		return ctx.Status(fiber.StatusBadRequest).JSON(helper.ResponseErrorHandler("Bad Request"))
 	}
@@ -66,6 +68,30 @@ func authenticate(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusAccepted).JSON(helper.ResponseSuccessHandler(fmt.Sprintf("%v", responseFromAuth.Error), responseFromAuth.Message))
+}
+
+func postOrder(ctx *fiber.Ctx) error {
+	var requestPayload dto.RequestPayload
+	var responseFromOrder helper.ResponseSuccess
+
+	if err := ctx.BodyParser(&requestPayload); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(helper.ResponseSuccessHandler("Bad Request", err))
+	}
+
+	//call order service
+	client := resty.New()
+	resp, _ := client.R().SetBody(&requestPayload.Order).SetResult(&responseFromOrder).Post("http://order-service/order")
+
+	fmt.Println("response dari order service : ", resp.String())
+	fmt.Println("request ke order service : ", requestPayload)
+
+	//read response from order service
+	if responseFromOrder.Error {
+		log.Error("Error when calling order service", responseFromOrder.Message)
+		return ctx.Status(fiber.StatusBadRequest).JSON(helper.ResponseSuccessHandler("error calling order service", responseFromOrder.Message))
+	}
+
+	return ctx.Status(fiber.StatusAccepted).JSON(helper.ResponseSuccessHandler(responseFromOrder.Message, responseFromOrder.Data))
 }
 
 func ping(ctx *fiber.Ctx) error {

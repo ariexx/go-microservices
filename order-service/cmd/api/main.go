@@ -20,7 +20,6 @@ type Config struct {
 const port = ":80"
 
 func main() {
-	//TODO connect to database
 	db := openDB()
 	defer func() {
 		sqlDB, err := db.DB()
@@ -32,10 +31,9 @@ func main() {
 	}()
 
 	//call data model
-	userRepo := data.NewOrderConfig(db)
-	_ = userRepo.AutoMigrate()
+	orderRepo := data.NewOrderConfig(db)
+	_ = orderRepo.AutoMigrate()
 
-	//TODO create user seeds
 	err := seeds.Run(db, seeds.All())
 	if err != nil {
 		log.Fatalf("Error while running seeds %s", err)
@@ -52,6 +50,7 @@ func main() {
 	}))
 
 	//inject routes
+	routes(app, db)
 
 	listen := app.Listen(port)
 	if listen != nil {

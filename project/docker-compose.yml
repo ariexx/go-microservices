@@ -13,6 +13,42 @@ services:
       mode: replicated
       replicas: 1
 
+  mysql:
+    image: 'mysql:latest'
+    container_name: 'mysql_auth'
+    ports:
+      - "3306:3306"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      - MYSQL_DATABASE=users
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
+  mysql-order:
+    image: 'mysql:latest'
+    container_name: 'mysql_order'
+    ports:
+      - "3307:3306"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      - MYSQL_DATABASE=orders
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
   authentication-service:
     container_name: 'authentication-service'
     build:
@@ -28,20 +64,19 @@ services:
       - mysql
     environment:
       DSN: "admin:password@tcp(mysql_auth:3306)/users?charset=utf8&parseTime=True&loc=Local"
-  mysql:
-    image: 'mysql:latest'
-    container_name: 'mysql_auth'
+
+  order-service:
+    container_name: 'order-service'
+    build:
+      context: ../order-service
+      dockerfile: order-service.dockerfile
+    restart: always
     ports:
-      - "3306:3306"
+      - "8082:80"
     deploy:
       mode: replicated
       replicas: 1
+    depends_on:
+      - mysql
     environment:
-        - MYSQL_DATABASE=users
-        - MYSQL_USER=admin
-        - MYSQL_PASSWORD=password
-        - MYSQL_ROOT_PASSWORD=root
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 20s
-      retries: 10
+      DSN: "admin:password@tcp(mysql_order:3306)/orders?charset=utf8&parseTime=True&loc=Local"

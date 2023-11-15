@@ -1,26 +1,25 @@
 package entity
 
-import "time"
+import (
+	"gorm.io/gorm"
+)
 
 type Order struct {
-	ID        uint      `json:"id"`
-	Email     string    `json:"email"`
-	OrderID   string    `json:"order_id"`
-	ProductID string    `json:"product_id"`
-	Quantity  int       `json:"quantity"`
-	Price     int       `json:"price"`
-	Total     int       `json:"total"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	gorm.Model
+	Email     string `json:"email"`
+	OrderID   string `json:"order_id"`
+	ProductID string `json:"product_id"`
+	Quantity  int    `json:"quantity"`
+	Price     int    `json:"price"`
+	Total     int    `json:"total"`
 }
 
 type CreateOrder struct {
-	Email     string    `json:"email"`
-	OrderID   string    `json:"order_id"`
-	ProductID string    `json:"product_id"`
-	Quantity  int       `json:"quantity"`
-	Price     int       `json:"price"`
-	Total     int       `json:"total"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	gorm.Model
+	Email     string `json:"email"`
+	OrderID   string `json:"order_id"`
+	ProductID string `json:"product_id"`
+	Quantity  int    `json:"quantity"`
+	Price     int    `json:"price"`
+	Total     int    `json:"total"`
 }
