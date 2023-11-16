@@ -37,6 +37,7 @@ func (o *orderRepository) CreateOrder(ctx context.Context, order *entity.CreateO
 		Quantity:  order.Quantity,
 		Price:     order.Price,
 		Total:     order.Total,
+		PlayerID:  order.PlayerID,
 	}
 	err := o.db.Create(&orderEntity).Error
 	if err != nil {

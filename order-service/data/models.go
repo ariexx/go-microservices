@@ -22,6 +22,7 @@ func NewOrderConfig(db *gorm.DB) OrderConfig {
 // Order model
 type Order struct {
 	gorm.Model
+	PlayerID  string `json:"player_id"`
 	Email     string `json:"email"`
 	OrderID   string `json:"order_id"`
 	ProductID string `json:"product_id"`

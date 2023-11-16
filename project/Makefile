@@ -10,7 +10,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_broker build_auth build_order
+up_build: build_auth build_order
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -35,7 +35,7 @@ build_auth:
 	@echo "Done!"
 
 build_order:
-	@echo "Building auth binary..."
+	@echo "Building order binary..."
 	cd ../order-service && env GOOS=linux CGO_ENABLED=0 go build -o ${ORDER_BINARY} ./cmd/api
 	@echo "Done!"
 
@@ -55,3 +55,10 @@ stop:
 	@echo "Stopping front end..."
 	@-pkill -SIGTERM -f "./${FRONT_END_BINARY}"
 	@echo "Stopped front end!"
+
+order_proto:
+	rm -rf ../order-service/pb/*.go
+	protoc --proto_path=../order-service/proto --go_out=../order-service/pb --go_opt=paths=source_relative \
+        --go-grpc_out=../order-service/pb --go-grpc_opt=paths=source_relative \
+        --grpc-gateway_out=../order-service/pb --grpc-gateway_opt=paths=source_relative \
+        ../order-service/proto/*.proto

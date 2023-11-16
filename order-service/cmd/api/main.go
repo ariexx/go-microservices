@@ -1,14 +1,21 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"context"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+	"google.golang.org/protobuf/encoding/protojson"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"log"
+	"net"
+	"net/http"
+	"order-service/cmd/gapi"
 	"order-service/data"
 	"order-service/data/seeds"
+	"order-service/pb"
 	"os"
 	"time"
 )
@@ -17,7 +24,8 @@ type Config struct {
 	db *gorm.DB
 }
 
-const port = ":80"
+const grpcPort = ":9090"
+const httpPort = ":80"
 
 func main() {
 	db := openDB()
@@ -39,22 +47,62 @@ func main() {
 		log.Fatalf("Error while running seeds %s", err)
 	}
 
-	app := fiber.New()
-	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "*",
-		AllowMethods:     "GET,POST,HEAD,PUT,DELETE,PATCH",
-		AllowHeaders:     "*", // "Content-Type,Authorization,Origin,X-Requested-With,Accept",
-		ExposeHeaders:    "Link",
-		AllowCredentials: true,
-		MaxAge:           300,
-	}))
+	go runGatewayServer(db)
+	runGRPCServer(db)
 
-	//inject routes
-	routes(app, db)
+}
 
-	listen := app.Listen(port)
-	if listen != nil {
-		panic(listen)
+func runGatewayServer(db *gorm.DB) {
+	jsonOptions := runtime.WithMarshalerOption("application/json+pretty", &runtime.JSONPb{
+		MarshalOptions: protojson.MarshalOptions{
+			Indent:    "  ",
+			Multiline: true, // Optional, implied by presence of "Indent".
+		},
+		UnmarshalOptions: protojson.UnmarshalOptions{
+			DiscardUnknown: true,
+		},
+	})
+
+	newServerGapi := gapi.NewServer(db)
+	grpcMux := runtime.NewServeMux(jsonOptions)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	err := pb.RegisterOrderServiceHandlerServer(ctx, grpcMux, newServerGapi)
+	if err != nil {
+		log.Fatalf("Error while registering gateway server %s", err)
+	}
+
+	mux := http.NewServeMux()
+	mux.Handle("/", grpcMux)
+
+	listener, err := net.Listen("tcp", httpPort)
+	if err != nil {
+		log.Fatalf("Error while listening gateway to port %s", err)
+	}
+
+	log.Println("Starting HTTP server at port " + httpPort)
+
+	err = http.Serve(listener, mux)
+	if err != nil {
+		log.Fatalf("Error while serving gateway HTTP %s", err)
+	}
+}
+
+func runGRPCServer(db *gorm.DB) {
+	newServerGapi := gapi.NewServer(db)
+	listener, err := net.Listen("tcp", grpcPort)
+	if err != nil {
+		log.Fatalf("Error while listening GRPC to port %s", err)
+	}
+
+	grpcServer := grpc.NewServer()
+	pb.RegisterOrderServiceServer(grpcServer, newServerGapi)
+	reflection.Register(grpcServer)
+	log.Println("Starting GRPC server at port " + grpcPort)
+	err = grpcServer.Serve(listener)
+	if err != nil {
+		log.Fatalf("Error while serving GRPC %s", err)
 	}
 }
 

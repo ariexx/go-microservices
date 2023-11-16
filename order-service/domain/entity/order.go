@@ -6,6 +6,7 @@ import (
 
 type Order struct {
 	gorm.Model
+	PlayerID  string `json:"player_id"`
 	Email     string `json:"email"`
 	OrderID   string `json:"order_id"`
 	ProductID string `json:"product_id"`
@@ -16,6 +17,7 @@ type Order struct {
 
 type CreateOrder struct {
 	gorm.Model
+	PlayerID  string `json:"player_id"`
 	Email     string `json:"email"`
 	OrderID   string `json:"order_id"`
 	ProductID string `json:"product_id"`

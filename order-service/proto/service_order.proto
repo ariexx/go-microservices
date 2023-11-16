@@ -1,0 +1,15 @@
+syntax = "proto3";
+package pb;
+
+import "rpc_create_order.proto";
+import "google/api/annotations.proto";
+option go_package = "order-service/pb";
+
+service OrderService {
+  rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse) {
+    option (google.api.http) = {
+      post: "/v1/order/create"
+      body: "*"
+    };
+  }
+}
