@@ -1,0 +1,10 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "product-service/pb";
+
+import "product.proto";
+
+message GetAllProductsResponse {
+    repeated Product products = 1;
+}

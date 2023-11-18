@@ -29,18 +29,6 @@ func InitDatabase() *gorm.DB {
 		log.Fatalf("Error while migrating database %s", err)
 	}
 
-	//insert dummy data
-	db.Create(&model.Product{
-		Name:   "Mobile Legend",
-		Banner: "https://picsum.photos/200/300",
-	})
-
-	db.Create(&model.ProductDetail{
-		ProductID: 1,
-		Name:      "Diamond 100",
-		Price:     100000,
-	})
-
 	//config database
 	sqlDB, err := db.DB()
 	if err != nil {

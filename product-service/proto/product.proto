@@ -1,0 +1,20 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "product-service/pb";
+
+message Product {
+  uint32 id = 1;
+  string name = 2;
+  string banner = 3;
+  repeated ProductDetail product_detail = 4;
+}
+
+message ProductDetail {
+    uint32 id = 1;
+    uint32 product_id = 2;
+    string name = 3;
+    uint32 price = 4;
+}
+
+message Empty {}

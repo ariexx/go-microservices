@@ -13,7 +13,6 @@ up:
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
 up_build: build_auth build_order build_product
 	@echo "Stopping docker images (if running...)"
-	docker-compose down
 	@echo "Building (when required) and starting docker images..."
 	docker-compose up --build -d
 	@echo "Docker images built and started!"
@@ -68,3 +67,10 @@ order_proto:
         --go-grpc_out=../order-service/pb --go-grpc_opt=paths=source_relative \
         --grpc-gateway_out=../order-service/pb --grpc-gateway_opt=paths=source_relative \
         ../order-service/proto/*.proto
+
+product_proto:
+	rm -rf ../product-service/pb/*.go
+	protoc --proto_path=../product-service/proto --go_out=../product-service/pb --go_opt=paths=source_relative \
+        --go-grpc_out=../product-service/pb --go-grpc_opt=paths=source_relative \
+        --grpc-gateway_out=../product-service/pb --grpc-gateway_opt=paths=source_relative \
+        ../product-service/proto/*.proto
