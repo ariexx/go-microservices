@@ -49,6 +49,24 @@ services:
       timeout: 20s
       retries: 10
 
+  mysql-product:
+    image: 'mysql:latest'
+    container_name: 'mysql_product'
+    ports:
+      - "3308:3306"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      - MYSQL_DATABASE=products
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+
   authentication-service:
     container_name: 'authentication-service'
     build:
@@ -73,7 +91,7 @@ services:
     restart: always
     ports:
       - "8082:80"
-      - "8083:9090"
+      - "8083:9090" #for grpc
     deploy:
       mode: replicated
       replicas: 1
@@ -81,3 +99,20 @@ services:
       - mysql
     environment:
       DSN: "admin:password@tcp(mysql_order:3306)/orders?charset=utf8&parseTime=True&loc=Local"
+
+  product-service:
+    container_name: 'product-service'
+    build:
+      context: ../product-service
+      dockerfile: product-service.dockerfile
+    restart: always
+    ports:
+      - "8084:80"
+      - "8085:9090" #for grpc
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - mysql
+    environment:
+      DSN: "admin:password@tcp(mysql_product:3306)/products?charset=utf8&parseTime=True&loc=Local"

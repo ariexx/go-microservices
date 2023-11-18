@@ -2,6 +2,7 @@ FRONT_END_BINARY=frontApp
 BROKER_BINARY=brokerApp
 AUTH_BINARY=authApp
 ORDER_BINARY=orderApp
+PRODUCT_BINARY=productApp
 
 ## up: starts all containers in the background without forcing build
 up:
@@ -10,7 +11,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_auth build_order
+up_build: build_auth build_order build_product
 	@echo "Stopping docker images (if running...)"
 	docker-compose down
 	@echo "Building (when required) and starting docker images..."
@@ -37,6 +38,11 @@ build_auth:
 build_order:
 	@echo "Building order binary..."
 	cd ../order-service && env GOOS=linux CGO_ENABLED=0 go build -o ${ORDER_BINARY} ./cmd/api
+	@echo "Done!"
+
+build_product:
+	@echo "Building product binary..."
+	cd ../product-service && env GOOS=linux CGO_ENABLED=0 go build -o ${PRODUCT_BINARY} ./cmd/api
 	@echo "Done!"
 
 ## build_front: builds the frone end binary
