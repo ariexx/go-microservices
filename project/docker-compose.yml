@@ -102,7 +102,7 @@ services:
       mode: replicated
       replicas: 1
     depends_on:
-      - mysql
+      - mysql-order
     environment:
       DSN: "admin:password@tcp(mysql_order:3306)/orders?charset=utf8&parseTime=True&loc=Local"
 
@@ -119,6 +119,16 @@ services:
       mode: replicated
       replicas: 1
     depends_on:
-      - mysql
+      - mysql-product
     environment:
       DSN: "admin:password@tcp(mysql_product:3306)/products?charset=utf8&parseTime=True&loc=Local"
+
+  email-service:
+    container_name: 'email-service'
+    build:
+      context: ../email-service
+      dockerfile: email-service.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
