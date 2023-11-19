@@ -13,9 +13,11 @@ app.use('/v1', route);
 
 route.post('/email', async (req, res) => {
     try {
-        await sendEmail(new EmailRequest(req.body.email, req.body.playerId, req.body.product, req.body.price, req.body.expiredTime));
+        await sendEmail(new EmailRequest(req.body.email, req.body.player_id, req.body.product, req.body.price, req.body.expiredTime));
+        console.log("email sent : ", req.body.email)
         res.status(200).send(new EmailResponse('success', 'Email sent'));
     } catch (err) {
+        console.log("email error : ", err.message)
         res.status(500).send(new EmailResponse('error', err.message));
     }
 });
@@ -27,9 +29,9 @@ app.listen(port, () => {
 
 //create dto for request
 class EmailRequest {
-    constructor(email, playerId, product, price, expiredTime) {
+    constructor(email, player_id, product, price, expiredTime) {
         this.email = email;
-        this.playerId = playerId;
+        this.player_id = player_id;
         this.product = product;
         this.price = price;
         this.expiredTime = expiredTime;

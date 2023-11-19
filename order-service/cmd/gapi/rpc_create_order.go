@@ -3,12 +3,14 @@ package gapi
 import (
 	"context"
 	"fmt"
+	"github.com/go-resty/resty/v2"
 	"math/rand"
 	"order-service/data"
 	"order-service/domain/entity"
 	"order-service/domain/repository"
 	"order-service/domain/service"
 	"order-service/pb"
+	"time"
 )
 
 func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
@@ -44,6 +46,9 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 		return nil, err
 	}
 
+	//send an email
+	sendEmail(req)
+
 	return &pb.CreateOrderResponse{
 		Order: &pb.Order{
 			PlayerId:  createOrder.PlayerID,
@@ -55,4 +60,25 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 			Total:     int32(createOrder.Total),
 		},
 	}, nil
+}
+
+func sendEmail(request *pb.CreateOrderRequest) {
+	//using goroutine to send email
+	go func() {
+		client := resty.New().SetTimeout(5 * time.Second)
+		_, err := client.R().
+			SetHeaders(map[string]string{
+				"Content-Type": "application/json",
+			}).
+			SetBody(map[string]interface{}{
+				"email":     request.GetEmail(),
+				"player_id": request.GetPlayerId(),
+				"product":   request.GetProductId(),
+				"price":     request.GetPrice(),
+			}).
+			Post("http://email-service:5000/v1/email")
+		if err != nil {
+			fmt.Println("error when calling email service : ", err)
+		}
+	}()
 }

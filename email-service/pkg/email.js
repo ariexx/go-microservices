@@ -25,7 +25,7 @@ async function sendEmail(req, res) {
         to: req.email,
         subject: "Payment Pending - Arief Store",
         html: mustache.render(template, {
-            playerId: req.playerId,
+            player_id: req.player_id,
             product: req.product,
             price: price,
         })

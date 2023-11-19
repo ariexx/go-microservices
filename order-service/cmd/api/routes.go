@@ -2,14 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 	"math/rand"
 	"order-service/domain/entity"
 	"order-service/domain/repository"
 	"order-service/domain/service"
-	"time"
 )
 
 type response struct {
@@ -74,20 +72,6 @@ func routes(app *fiber.App, db *gorm.DB) {
 		}
 
 		//call services product with gRPC then get product name and price
-
-		//TODO: call payment service
-		client := resty.New().SetTimeout(5 * time.Second)
-		_, _ = client.R().
-			SetHeaders(map[string]string{
-				"Content-Type": "application/json",
-			}).
-			SetBody(map[string]interface{}{
-				"email":     orderRequest.EmailAccount,
-				"player_id": orderRequest.PlayerID,
-				"product":   orderRequest.ProductID,
-				"price":     orderRequest.ProductPrice,
-			}).
-			Post("http://email-service:5000/api/email")
 
 		return c.Status(fiber.StatusAccepted).JSON(response{
 			Message: "Order Success",
