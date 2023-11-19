@@ -23,7 +23,7 @@ async function sendEmail(req, res) {
     let mailOptions = {
         from: "arief@microservices.com",
         to: req.email,
-        subject: "Invoice Transaksi Arief Store",
+        subject: "Payment Pending - Arief Store",
         html: mustache.render(template, {
             playerId: req.playerId,
             product: req.product,
