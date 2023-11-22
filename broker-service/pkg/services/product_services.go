@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	productProto "product-service/pb"
+	"time"
 )
 
 type ProductService interface {
@@ -33,7 +34,10 @@ func (p *productService) GetAllProducts() ([]dto.ProductResponse, error) {
 
 	client := productProto.NewProductServiceClient(conn)
 
-	res, err := client.GetProducts(context.Background(), &productProto.Empty{})
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second) // 3 seconds
+	defer cancel()
+
+	res, err := client.GetProducts(ctx, &productProto.Empty{})
 	if err != nil {
 		log.Println("Failed to call grpc GetProducts : ", err)
 		return response, fmt.Errorf("%s", err)
