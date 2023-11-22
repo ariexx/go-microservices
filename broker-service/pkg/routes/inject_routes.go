@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"broker_service/cmd/pkg/dto"
-	"broker_service/cmd/pkg/helper"
+	"broker_service/pkg/dto"
+	"broker_service/pkg/helper"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/gofiber/fiber/v2"
