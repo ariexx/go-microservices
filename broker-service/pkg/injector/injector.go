@@ -11,3 +11,10 @@ func InitializeProductController() controller.ProductController {
 
 	return productController
 }
+
+func InitializeOrderController() controller.OrderController {
+	service := services.NewOrderServices()
+	orderController := controller.NewOrderController(service)
+
+	return orderController
+}

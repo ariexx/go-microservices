@@ -6,6 +6,7 @@ require (
 	github.com/go-resty/resty/v2 v2.10.0
 	github.com/gofiber/fiber/v2 v2.50.0
 	google.golang.org/grpc v1.59.0
+	order-service v0.0.0-00010101000000-000000000000
 	product-service v0.0.0-00010101000000-000000000000
 )
 
@@ -32,3 +33,5 @@ require (
 )
 
 replace product-service => ../product-service
+
+replace order-service => ../order-service
