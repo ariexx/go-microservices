@@ -73,6 +73,26 @@ services:
     volumes:
         - ./volumes/mysql-product:/var/lib/mysql
 
+  mysql-payment:
+    image: 'mysql:latest'
+    container_name: 'mysql_payment'
+    ports:
+      - "3309:3306"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      - MYSQL_DATABASE=payments
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    volumes:
+      - ./volumes/mysql-payment:/var/lib/mysql
+
   authentication-service:
     container_name: 'authentication-service'
     build:
@@ -132,3 +152,20 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+
+  payment-service:
+    container_name: 'payment-service'
+    build:
+      context: ../payment-service
+      dockerfile: payment-service.dockerfile
+    restart: always
+    ports:
+      - "8086:80"
+      - "8087:9090" #for grpc
+    deploy:
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - mysql-payment
+    environment:
+      DSN: "admin:password@tcp(mysql_payment:3306)/payments?charset=utf8&parseTime=True&loc=Local"
