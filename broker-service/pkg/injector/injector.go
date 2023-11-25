@@ -18,3 +18,10 @@ func InitializeOrderController() controller.OrderController {
 
 	return orderController
 }
+
+func InitializePaymentController() controller.PaymentController {
+	service := services.NewPaymentService()
+	paymentController := controller.NewPaymentController(service)
+
+	return paymentController
+}

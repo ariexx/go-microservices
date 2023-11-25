@@ -9,4 +9,4 @@ message GetAllPaymentResponse {
   repeated Payment payments = 1;
 }
 
-message Empty {}
+message GetAllEmpty {}

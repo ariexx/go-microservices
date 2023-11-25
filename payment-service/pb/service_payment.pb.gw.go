@@ -32,7 +32,7 @@ var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
 func request_PaymentService_GetPayments_0(ctx context.Context, marshaler runtime.Marshaler, client PaymentServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Empty
+	var protoReq GetAllEmpty
 	var metadata runtime.ServerMetadata
 
 	msg, err := client.GetPayments(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
@@ -41,7 +41,7 @@ func request_PaymentService_GetPayments_0(ctx context.Context, marshaler runtime
 }
 
 func local_request_PaymentService_GetPayments_0(ctx context.Context, marshaler runtime.Marshaler, server PaymentServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Empty
+	var protoReq GetAllEmpty
 	var metadata runtime.ServerMetadata
 
 	msg, err := server.GetPayments(ctx, &protoReq)

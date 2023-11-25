@@ -15,6 +15,9 @@ func InitializeGRPCRoutes(app *fiber.App) {
 
 			orderController := injector.InitializeOrderController()
 			orderController.Route(v1)
+
+			paymentController := injector.InitializePaymentController()
+			paymentController.Route(v1)
 		}
 	}
 }

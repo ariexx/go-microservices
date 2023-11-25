@@ -8,7 +8,7 @@ import (
 	"payment-service/pkg/service"
 )
 
-func (s *Server) GetPayments(ctx context.Context, req *pb.Empty) (*pb.GetAllPaymentResponse, error) {
+func (s *Server) GetPayments(ctx context.Context, req *pb.GetAllEmpty) (*pb.GetAllPaymentResponse, error) {
 	//call repository
 	paymentRepository := repository.NewPaymentChannelRepository(s.db)
 	paymentService := service.NewPaymentService(paymentRepository)
