@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "product-service/pb";
+
+import "product.proto";
+
+message GetProductDetailByProductIDRequest {
+    int64 product_id = 1;
+}
+
+message GetProductDetailByProductIDResponse {
+    repeated ProductDetail product_detail = 1;
+}

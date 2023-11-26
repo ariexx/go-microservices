@@ -1,5 +1,6 @@
 <script>
 import Navbar from '../../components/partials/NavbarDashboard.vue'
+import axios from 'axios'
 export default {
   name: 'DetailView',
   components: {
@@ -7,11 +8,18 @@ export default {
   },
   props: ['id'],
   mounted() {
-    console.log('id', this.id)
+    this.getProductById(this.id)
+    this.getPaymentChannels()
   },
   data() {
     return {
-      product: {}
+      product: {},
+      paymentChannels: [],
+      player_id: '',
+      email: '',
+      product_id: '',
+      payment_id: '',
+      price: ''
     }
   },
   methods: {
@@ -23,6 +31,51 @@ export default {
       } catch (err) {
         console.log(err.message)
       }
+    },
+
+    async getPaymentChannels() {
+      try {
+        const res = await fetch('http://localhost:8080/api/v1/payments')
+        const data = await res.json()
+        this.paymentChannels = data.data
+      } catch (err) {
+        console.log(err.message)
+      }
+    },
+
+    createOrder() {
+      try {
+        this.getPriceByProductDetailId(this.product_id)
+        axios
+          .post('http://localhost:8080/api/v1/orders', {
+            email: this.email,
+            product_id: String(this.product_id),
+            price: this.price,
+            total: this.price,
+            player_id: this.player_id
+            // payment_id: this.payment_id
+          })
+          .then((response) => {
+            if (response.status == 200) {
+              return alert('Order berhasil')
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+            return alert(error.response.data.message)
+          })
+      } catch (err) {
+        console.log(err.message)
+      }
+    },
+
+    getPriceByProductDetailId(id) {
+      this.product.forEach((element) => {
+        if (element.id === id) {
+          this.price = element.price
+          this.total = element.price
+        }
+      })
     }
   }
 }
@@ -36,50 +89,88 @@ export default {
         <div class="col-md-5">
           <img
             class="card-img-top mb-5 mb-md-0"
-            src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg"
+            src="https://picsum.photos/200/300
+"
             alt="..."
           />
         </div>
         <div class="col-md-7">
-          <div class="card mb-3">
-            <div class="card-body">
-              <div class="form-row">
-                <label for="basic-url">Player ID</label>
-                <div class="col-sm-6 col-md-6 col-lg-12">
-                  <input type="text" class="form-control" placeholder="Player ID Game" />
+          <form @submit.prevent="createOrder()">
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="form-row">
+                  <label for="basic-url">Player ID</label>
+                  <div class="col-sm-6 col-md-6 col-lg-12">
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Player ID Game"
+                      v-model="player_id"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="card mb-3">
-            <div class="card-body">
-              <label>Pilih Paket :</label>
-              <div class="form-row">
-                <div class="col-sm-6 col-md-6 col-lg-12">
-                  <select class="form-control">
-                    <option value="1">Paket 1</option>
-                    <option value="2">Paket 2</option>
-                    <option value="3">Paket 3</option>
-                  </select>
+            <div class="card mb-3">
+              <div class="card-body">
+                <label>Pilih Paket :</label>
+                <div class="form-row">
+                  <div class="col-sm-6 col-md-6 col-lg-12">
+                    <select class="form-control" v-model="product_id" required>
+                      <option
+                        v-for="detailProduct in product"
+                        :value="detailProduct.id"
+                        :key="detailProduct.id"
+                      >
+                        {{ detailProduct.name }} -
+                        {{
+                          Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(
+                            detailProduct.price
+                          )
+                        }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="card mb-3">
-            <div class="card-body">
-              <label>Pilih Channel Pembayaran :</label>
-              <div class="form-row">
-                <div class="col-sm-6 col-md-6 col-lg-12">
-                  <select class="form-control">
-                    <option value="1">Mandiri</option>
-                    <option value="2">BCA</option>
-                    <option value="3">QRIS</option>
-                  </select>
+            <div class="card mb-3">
+              <div class="card-body">
+                <label>Pilih Channel Pembayaran :</label>
+                <div class="form-row">
+                  <div class="col-sm-6 col-md-6 col-lg-12">
+                    <select class="form-control" v-model="payment_id">
+                      <option
+                        v-for="paymentChannel in paymentChannels"
+                        :value="paymentChannel.id"
+                        :key="paymentChannel.id"
+                      >
+                        {{ paymentChannel.name }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <button class="btn btn-primary btn-lg" type="submit">Beli</button>
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="form-row">
+                  <label for="basic-url">Email</label>
+                  <div class="col-sm-6 col-md-6 col-lg-12">
+                    <input
+                      type="email"
+                      class="form-control"
+                      placeholder="Email"
+                      v-model="email"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-lg">Beli</button>
+          </form>
         </div>
       </div>
     </div>

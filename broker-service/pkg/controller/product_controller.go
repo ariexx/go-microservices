@@ -4,11 +4,14 @@ import (
 	"broker_service/pkg/helper"
 	"broker_service/pkg/services"
 	"github.com/gofiber/fiber/v2"
+	"log"
+	"strconv"
 )
 
 type ProductController interface {
 	GetAllProducts(ctx *fiber.Ctx) error
 	Routes(router fiber.Router)
+	GetProductDetailByProductId(ctx *fiber.Ctx) error
 }
 
 type productController struct {
@@ -26,8 +29,22 @@ func (p *productController) GetAllProducts(ctx *fiber.Ctx) error {
 
 func (p *productController) Routes(router fiber.Router) {
 	router.Get("/products", p.GetAllProducts)
+	router.Get("/products/:productId", p.GetProductDetailByProductId)
 }
 
 func NewProductController(productService services.ProductService) ProductController {
 	return &productController{productService: productService}
+}
+
+func (p *productController) GetProductDetailByProductId(ctx *fiber.Ctx) error {
+	productId := ctx.Params("productId")
+
+	productIdUint, _ := strconv.ParseUint(productId, 10, 32)
+	productDetail, err := p.productService.GetProductDetailByProductId(uint32(productIdUint))
+	if err != nil {
+		log.Println("Error while getting product detail by product id : ", err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(helper.ResponseErrorHandler(err.Error()))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(helper.ResponseSuccessHandler("success", productDetail))
 }

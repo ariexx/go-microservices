@@ -13,6 +13,7 @@ import (
 
 type ProductService interface {
 	GetAllProducts() ([]dto.ProductResponse, error)
+	GetProductDetailByProductId(productId uint32) ([]dto.ProductDetailResponse, error)
 }
 
 type productService struct {
@@ -20,6 +21,44 @@ type productService struct {
 
 func NewProductServices() ProductService {
 	return &productService{}
+}
+
+func (p *productService) GetProductDetailByProductId(productId uint32) ([]dto.ProductDetailResponse, error) {
+	response := make([]dto.ProductDetailResponse, 0)
+
+	conn, err := grpc.Dial("product-service:9090", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Println("Failed to call grpc dial GetProductDetailByProductId broker service : ", err)
+		return response, fmt.Errorf("%s", err)
+	}
+
+	defer conn.Close()
+
+	client := productProto.NewProductServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second) // 3 seconds
+
+	defer cancel()
+
+	res, err := client.GetProductDetailById(ctx, &productProto.GetProductDetailByProductIDRequest{
+		ProductId: int64(productId),
+	})
+
+	if err != nil {
+		log.Println("Failed to call grpc GetProductDetailById broker service : ", err)
+		return response, fmt.Errorf("%s", err)
+	}
+
+	for _, productDetail := range res.ProductDetail {
+		response = append(response, dto.ProductDetailResponse{
+			ID:        productDetail.GetId(),
+			ProductId: productDetail.GetProductId(),
+			Name:      productDetail.GetName(),
+			Price:     productDetail.GetPrice(),
+		})
+	}
+
+	return response, nil
 }
 
 func (p *productService) GetAllProducts() ([]dto.ProductResponse, error) {
