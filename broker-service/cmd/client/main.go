@@ -4,6 +4,7 @@ import (
 	"broker_service/pkg/routes"
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
 )
 
@@ -23,6 +24,12 @@ func main() {
 			})
 		},
 	})
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "*",
+		AllowHeaders: "*",
+	}))
 
 	routes.InitializeGRPCRoutes(app)
 	if err := app.Listen(port); err != nil {
