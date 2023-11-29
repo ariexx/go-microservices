@@ -12,6 +12,7 @@ type ProductController interface {
 	GetAllProducts(ctx *fiber.Ctx) error
 	Routes(router fiber.Router)
 	GetProductDetailByProductId(ctx *fiber.Ctx) error
+	GetProductById(ctx *fiber.Ctx) error
 }
 
 type productController struct {
@@ -30,6 +31,7 @@ func (p *productController) GetAllProducts(ctx *fiber.Ctx) error {
 func (p *productController) Routes(router fiber.Router) {
 	router.Get("/products", p.GetAllProducts)
 	router.Get("/products/:productId", p.GetProductDetailByProductId)
+	router.Get("/product/:productId", p.GetProductById)
 }
 
 func NewProductController(productService services.ProductService) ProductController {
@@ -47,4 +49,17 @@ func (p *productController) GetProductDetailByProductId(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(helper.ResponseSuccessHandler("success", productDetail))
+}
+
+func (p *productController) GetProductById(ctx *fiber.Ctx) error {
+	productId := ctx.Params("productId")
+
+	productIdUint, _ := strconv.ParseUint(productId, 10, 32)
+	product, err := p.productService.GetProductById(uint32(productIdUint))
+	if err != nil {
+		log.Println("Error while getting product by id : ", err)
+		return ctx.Status(fiber.StatusBadRequest).JSON(helper.ResponseErrorHandler(err.Error()))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(helper.ResponseSuccessHandler("success", product))
 }

@@ -17,4 +17,10 @@ message ProductDetail {
     uint32 price = 4;
 }
 
+message ProductSingle {
+  uint32 id = 1;
+  string name = 2;
+  string banner = 3;
+}
+
 message Empty {}

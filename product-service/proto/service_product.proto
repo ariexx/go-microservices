@@ -3,6 +3,7 @@ package pb;
 
 import "rpc_get_product.proto";
 import "rpc_get_product_detail_by_id.proto";
+import "rpc_get_product_by_id.proto";
 import "product.proto";
 import "google/api/annotations.proto";
 option go_package = "product-service/pb";
@@ -17,5 +18,8 @@ service ProductService {
     option (google.api.http) = {
       get: "/v1/products/{product_id}"
     };
+  }
+
+  rpc GetProductById(GetProductByIdRequest) returns (GetProductByIdResponse) {
   }
 }

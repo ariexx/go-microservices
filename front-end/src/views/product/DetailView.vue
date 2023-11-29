@@ -1,33 +1,50 @@
 <script>
 import Navbar from '../../components/partials/NavbarDashboard.vue'
+import FooterDashboard from '../../components/partials/FooterDashboard.vue'
 import axios from 'axios'
+import helper from '../../helper/image'
 export default {
   name: 'DetailView',
   components: {
-    Navbar
+    Navbar,
+    FooterDashboard
   },
-  props: ['id'],
+  props: ['id', "product-name"],
   mounted() {
-    this.getProductById(this.id)
+    this.getProductDetailByProductId(this.id)
     this.getPaymentChannels()
+    this.getProductById(this.id)
   },
   data() {
     return {
       product: {},
+      productData: {},
       paymentChannels: [],
       player_id: '',
       email: '',
       product_id: '',
       payment_id: '',
-      price: ''
+      price: '',
+
+      helper: helper
     }
   },
   methods: {
-    async getProductById(id) {
+    async getProductDetailByProductId(id) {
       try {
         const res = await fetch(`http://localhost:8080/api/v1/products/${id}`)
         const data = await res.json()
         this.product = data.data
+      } catch (err) {
+        console.log(err.message)
+      }
+    },
+
+    async getProductById(id) {
+      try {
+        const res = await fetch(`http://localhost:8080/api/v1/product/${id}`)
+        const data = await res.json()
+        this.productData = data.data
       } catch (err) {
         console.log(err.message)
       }
@@ -89,9 +106,8 @@ export default {
         <div class="col-md-5">
           <img
             class="card-img-top mb-5 mb-md-0"
-            src="https://picsum.photos/200/300
-"
-            alt="..."
+            :src="'/' + productData.banner"
+            :alt="product.name"
           />
         </div>
         <div class="col-md-7">
@@ -175,6 +191,7 @@ export default {
       </div>
     </div>
   </section>
+  <FooterDashboard />
 </template>
 
 <style></style>

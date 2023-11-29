@@ -11,6 +11,7 @@ type ProductRepository interface {
 	Create(product *dto.CreateProductRequest) error
 	GetAll() ([]model.Product, error)
 	GetByProductID(id uint) ([]*model.ProductDetail, error)
+	GetProductById(id uint) (*model.Product, error)
 }
 
 type productRepository struct {
@@ -19,6 +20,16 @@ type productRepository struct {
 
 func NewProductRepository(db *gorm.DB) ProductRepository {
 	return &productRepository{db: db}
+}
+
+func (r *productRepository) GetProductById(id uint) (*model.Product, error) {
+	var product model.Product
+	if err := r.db.Preload("ProductDetails").Where("id = ?", id).First(&product).Error; err != nil {
+		log.Print("Error while getting product by id : ", err)
+		return nil, err
+	}
+
+	return &product, nil
 }
 
 func (r *productRepository) GetByProductID(id uint) ([]*model.ProductDetail, error) {
