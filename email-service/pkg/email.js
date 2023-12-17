@@ -2,8 +2,10 @@ const nodemailer = require('nodemailer');
 const mustache = require('mustache');
 const fs = require('fs');
 
+var TEMPLATE_PATH = __dirname + "/../template/transaction_success.html";
+
 async function sendEmail(req, res) {
-    const template = fs.readFileSync('./template/transaction_success.html', { encoding: 'utf-8' });
+    const template = fs.readFileSync(TEMPLATE_PATH, { encoding: 'utf-8' });
     let transporter = nodemailer.createTransport({
         host: 'sandbox.smtp.mailtrap.io',
         port: 2525,
@@ -22,7 +24,7 @@ async function sendEmail(req, res) {
 
     let mailOptions = {
         from: "arief@microservices.com",
-        to: req.email,
+        to: "ariefkeren@gmail.com",
         subject: "Payment Pending - Arief Store",
         html: mustache.render(template, {
             player_id: req.player_id,

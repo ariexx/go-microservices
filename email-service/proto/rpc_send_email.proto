@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package emailPackage;
+
+service EmailService {
+  rpc sendEmail(SendEmailRequest) returns (SendEmailResponse) {}
+}
+
+message SendEmailRequest {
+  string to = 1;
+  string playerId = 2;
+  string productName = 3;
+  int32 productPrice = 4;
+}
+
+message SendEmailResponse {
+  string message = 1;
+}
