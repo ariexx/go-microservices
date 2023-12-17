@@ -4,7 +4,7 @@ const fs = require('fs');
 
 var TEMPLATE_PATH = __dirname + "/../template/transaction_success.html";
 
-async function sendEmail(req, res) {
+async function sendEmail(req) {
     const template = fs.readFileSync(TEMPLATE_PATH, { encoding: 'utf-8' });
     let transporter = nodemailer.createTransport({
         host: 'sandbox.smtp.mailtrap.io',
@@ -36,6 +36,7 @@ async function sendEmail(req, res) {
     let info = await transporter.sendMail(mailOptions);
 
     console.log("Message sent: %s", info.messageId);
+    return info.messageId;
 }
 
 module.exports = {

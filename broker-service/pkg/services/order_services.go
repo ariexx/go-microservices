@@ -31,7 +31,7 @@ func (o *orderService) CreateOrder(request *pb.CreateOrderRequest) error {
 
 	client := pb.NewOrderServiceClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second) // 3 seconds
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) // 3 seconds
 	defer cancel()
 
 	_, err = client.CreateOrder(ctx, request)

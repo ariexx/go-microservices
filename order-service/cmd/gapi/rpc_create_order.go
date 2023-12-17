@@ -11,6 +11,7 @@ import (
 	"order-service/domain/repository"
 	"order-service/domain/service"
 	"order-service/pb"
+	"time"
 )
 
 func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
@@ -47,9 +48,10 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 	}
 
 	//send an email
-	go func() {
-		_ = sendEmail(req)
-	}()
+	err = sendEmail(req)
+	if err != nil {
+		return nil, err
+	}
 
 	return &pb.CreateOrderResponse{
 		Order: &pb.Order{
@@ -66,20 +68,29 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 
 func sendEmail(request *pb.CreateOrderRequest) error {
 
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) // 3 seconds
+	defer cancel()
 	//send email using grpc
-	conn, _ := grpc.DialContext(ctx, "email-service:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.DialContext(ctx, "email-service:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Println("Error sending email #1")
+		return err
+	}
 
 	defer conn.Close()
 
 	client := pb.NewEmailServiceClient(conn)
 
-	_, _ = client.SendEmail(ctx, &pb.SendEmailRequest{
+	_, err = client.SendEmail(ctx, &pb.SendEmailRequest{
 		To:           request.GetEmail(),
 		PlayerId:     request.GetPlayerId(),
 		ProductName:  request.GetProductId(),
 		ProductPrice: request.GetPrice(),
 	})
+	if err != nil {
+		fmt.Println("Error sending email #2")
+		return err
+	}
 
 	return nil
 }

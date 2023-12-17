@@ -14,7 +14,15 @@ const { sendEmail } = require('../pkg/email');
 
 let Server = new grpc.Server();
 Server.addService(emailPackage.EmailService.service, {
-    SendEmail: sendEmail
+    SendEmail: (call, callback) => {
+        console.log("Request from client: ", call.request);
+        sendEmail(call.request).then(r => {
+            console.log("Response from sendEmail: ", r);
+            //set message id to response
+            callback(null, { status: "OK" });
+        });
+        callback(null, { status: "OK" });
+    }
 });
 
 //get server address from env
