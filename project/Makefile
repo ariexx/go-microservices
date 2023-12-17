@@ -14,7 +14,7 @@ up:
 	@echo "Docker images started!"
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_auth build_order build_product build_broker build_payment
+up_build: build_order build_product build_broker build_payment #build_auth
 	@echo "Stopping docker images (if running...)"
 	@echo "Building (when required) and starting docker images..."
 	docker-compose up --build -d
@@ -89,3 +89,13 @@ payment_proto:
 		--go-grpc_out=../payment-service/pb --go-grpc_opt=paths=source_relative \
 		--grpc-gateway_out=../payment-service/pb --grpc-gateway_opt=paths=source_relative \
 		../payment-service/proto/*.proto
+
+email_proto:
+	rm -rf ../email-service/pb/*.go
+	protoc --proto_path=../email-service/proto --go_out=../order-service/pb --go_opt=paths=source_relative \
+		--go-grpc_out=../order-service/pb --go-grpc_opt=paths=source_relative \
+		--grpc-gateway_out=../order-service/pb --grpc-gateway_opt=paths=source_relative \
+		../email-service/proto/*.proto
+
+order_email:
+	make order_proto && make email_proto

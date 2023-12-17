@@ -168,6 +168,10 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    ports:
+      - "50051:50051"
+    environment:
+      SERVER_ADDRESS: "0.0.0.0:50051"
     networks:
       - microservices
 
