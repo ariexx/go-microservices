@@ -3,7 +3,6 @@ module order-service
 go 1.20
 
 require (
-	github.com/go-resty/resty/v2 v2.10.0
 	github.com/gofiber/fiber/v2 v2.50.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1
 	google.golang.org/genproto/googleapis/api v0.0.0-20231106174013-bbf56f31fb17

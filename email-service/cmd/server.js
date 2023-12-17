@@ -1,25 +1,27 @@
 var PROTO_PATH = __dirname + "/../proto/rpc_send_email.proto";
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
-const packageDef = protoLoader.loadSync(PROTO_PATH, {});
+const packageDef = protoLoader.loadSync(PROTO_PATH, {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true
+});
 const grpcObject = grpc.loadPackageDefinition(packageDef);
-const emailPackage = grpcObject.emailPackage;
+const emailPackage = grpcObject.pb;
 const { sendEmail } = require('../pkg/email');
 
-const server = new grpc.Server();
-server.addService(emailPackage.EmailService.service, {
-    sendEmail: sendEmail
+let Server = new grpc.Server();
+Server.addService(emailPackage.EmailService.service, {
+    SendEmail: sendEmail
 });
 
 //get server address from env
-const serverAddress = process.env.SERVER_ADDRESS || ""
-console.log("server address: ", serverAddress)
+// const serverAddress = process.env.SERVER_ADDRESS;
+// console.log("server address: ", serverAddress)
 
-server.bindAsync(serverAddress, grpc.ServerCredentials.createInsecure(), (error) => {
-    if (error) {
-        console.error("error from grpc server email service" + error);
-        return;
-    }
-    server.start();
-    console.log("gRPC server running at :50051");
+Server.bindAsync("0.0.0.0:50051", grpc.ServerCredentials.createInsecure(), () => {
+    console.log("Server running at 50051");
+    Server.start();
 });

@@ -1,9 +1,11 @@
 syntax = "proto3";
 
-package emailPackage;
+package pb;
+
+option go_package = "order-service/pb";
 
 service EmailService {
-  rpc sendEmail(SendEmailRequest) returns (SendEmailResponse) {}
+  rpc SendEmail(SendEmailRequest) returns (SendEmailResponse) {}
 }
 
 message SendEmailRequest {

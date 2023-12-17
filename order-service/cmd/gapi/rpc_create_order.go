@@ -3,14 +3,14 @@ package gapi
 import (
 	"context"
 	"fmt"
-	"github.com/go-resty/resty/v2"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"math/rand"
 	"order-service/data"
 	"order-service/domain/entity"
 	"order-service/domain/repository"
 	"order-service/domain/service"
 	"order-service/pb"
-	"time"
 )
 
 func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error) {
@@ -47,7 +47,9 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 	}
 
 	//send an email
-	sendEmail(req)
+	go func() {
+		_ = sendEmail(req)
+	}()
 
 	return &pb.CreateOrderResponse{
 		Order: &pb.Order{
@@ -62,23 +64,22 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 	}, nil
 }
 
-func sendEmail(request *pb.CreateOrderRequest) {
-	//using goroutine to send email
-	go func() {
-		client := resty.New().SetTimeout(5 * time.Second)
-		_, err := client.R().
-			SetHeaders(map[string]string{
-				"Content-Type": "application/json",
-			}).
-			SetBody(map[string]interface{}{
-				"email":     request.GetEmail(),
-				"player_id": request.GetPlayerId(),
-				"product":   request.GetProductId(),
-				"price":     request.GetPrice(),
-			}).
-			Post("http://email-service:5000/v1/email")
-		if err != nil {
-			fmt.Println("error when calling email service : ", err)
-		}
-	}()
+func sendEmail(request *pb.CreateOrderRequest) error {
+
+	ctx := context.Background()
+	//send email using grpc
+	conn, _ := grpc.DialContext(ctx, "email-service:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	defer conn.Close()
+
+	client := pb.NewEmailServiceClient(conn)
+
+	_, _ = client.SendEmail(ctx, &pb.SendEmailRequest{
+		To:           request.GetEmail(),
+		PlayerId:     request.GetPlayerId(),
+		ProductName:  request.GetProductId(),
+		ProductPrice: request.GetPrice(),
+	})
+
+	return nil
 }

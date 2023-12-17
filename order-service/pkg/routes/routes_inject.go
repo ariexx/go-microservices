@@ -17,4 +17,5 @@ func CreateOrder(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusBadRequest).JSON(helper.ResponseErrorHandler(err.Error()))
 	}
 
+	return nil
 }

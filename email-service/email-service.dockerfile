@@ -1,6 +1,6 @@
 
 # Use the official Node.js image as the base image
-FROM node:latest
+FROM node:12.16.1
 
 # Set the working directory in the container
 WORKDIR /app
@@ -13,6 +13,8 @@ RUN npm install
 
 # Copy the application code to the container
 COPY . .
+
+EXPOSE 50051
 
 # Start the application
 CMD ["npm", "start"]
