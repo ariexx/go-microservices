@@ -68,10 +68,11 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 
 func sendEmail(request *pb.CreateOrderRequest) error {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second) // 3 seconds
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second) // 3 seconds
 	defer cancel()
 	//send email using grpc
-	conn, err := grpc.DialContext(ctx, "email-service:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.DialContext(ctx, "email-service:50051",
+		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		fmt.Println("Error sending email #1")
 		return err
