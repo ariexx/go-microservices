@@ -20,16 +20,22 @@ async function sendEmail(req) {
     let price = Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
-    }).format(req.price);
+    }).format(req.productPrice);
+
+    //set date now + 1 day and format to locale
+    let expiredAt = new Date();
+    expiredAt.setDate(expiredAt.getDate() + 1);
+    expiredAt = expiredAt.toLocaleDateString();
 
     let mailOptions = {
         from: "arief@microservices.com",
-        to: "ariefkeren@gmail.com",
+        to: req.to,
         subject: "Payment Pending - Arief Store",
         html: mustache.render(template, {
-            player_id: req.player_id,
-            product: req.product,
+            player_id: req.playerId,
+            product: req.productName,
             price: price,
+            expiredAt: expiredAt
         })
     }
 
