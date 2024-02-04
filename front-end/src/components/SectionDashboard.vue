@@ -1,9 +1,9 @@
 <script>
-import helperImage from '../helper/image'
+import getImageBySlug from '../helper/image'
 export default {
   data() {
     return {
-      helperImage: helperImage,
+      getImageBySlug: getImageBySlug,
       products: []
     }
   },
@@ -19,7 +19,7 @@ export default {
       } catch (err) {
         console.log(err.message)
       }
-    },
+    }
   }
 }
 </script>
@@ -31,7 +31,7 @@ export default {
         <div class="col mb-5" v-for="product in products" :key="product.id">
           <div class="card h-100">
             <!-- Product image-->
-            <img class="card-img-top" :src="helperImage.getImageBySlug(product.name)" />
+            <img class="card-img-top" :src="getImageBySlug(product.name)" />
             <!-- Product details-->
             <div class="card-body p-4">
               <div class="text-center">

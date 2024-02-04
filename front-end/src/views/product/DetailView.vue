@@ -2,14 +2,14 @@
 import Navbar from '../../components/partials/NavbarDashboard.vue'
 import FooterDashboard from '../../components/partials/FooterDashboard.vue'
 import axios from 'axios'
-import helper from '../../helper/image'
+import getImageBySlug from '../../helper/image'
 export default {
   name: 'DetailView',
   components: {
     Navbar,
     FooterDashboard
   },
-  props: ['id', "product-name"],
+  props: ['id', 'product-name'],
   mounted() {
     this.getProductDetailByProductId(this.id)
     this.getPaymentChannels()
@@ -26,7 +26,7 @@ export default {
       payment_id: '',
       price: '',
 
-      helper: helper
+      getImageBySlug: getImageBySlug
     }
   },
   methods: {
@@ -106,8 +106,8 @@ export default {
         <div class="col-md-5">
           <img
             class="card-img-top mb-5 mb-md-0"
-            :src="'/' + productData.banner"
-            :alt="product.name"
+            :src="getImageBySlug(productData.name)"
+            :alt="productData.name"
           />
         </div>
         <div class="col-md-7">
