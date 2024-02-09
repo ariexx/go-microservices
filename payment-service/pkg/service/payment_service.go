@@ -7,6 +7,7 @@ import (
 
 type PaymentService interface {
 	GetAll() ([]*dto.PaymentChannelResponse, error)
+	FindByID(id int) (*dto.PaymentChannelResponse, error)
 }
 
 type paymentService struct {
@@ -23,4 +24,13 @@ func (p *paymentService) GetAll() ([]*dto.PaymentChannelResponse, error) {
 		return nil, err
 	}
 	return paymentChannels, nil
+}
+
+func (p *paymentService) FindByID(id int) (*dto.PaymentChannelResponse, error) {
+	paymentChannel, err := p.paymentRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return paymentChannel, nil
 }

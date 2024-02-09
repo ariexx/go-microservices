@@ -3,6 +3,7 @@ import Navbar from '../../components/partials/NavbarDashboard.vue'
 import FooterDashboard from '../../components/partials/FooterDashboard.vue'
 import axios from 'axios'
 import getImageBySlug from '../../helper/image'
+import router from '@/router'
 export default {
   name: 'DetailView',
   components: {
@@ -69,17 +70,15 @@ export default {
             product_id: String(this.product_id),
             price: this.price,
             total: this.price,
-            player_id: this.player_id
-            // payment_id: this.payment_id
+            player_id: this.player_id,
+            payment_id: this.payment_id
           })
           .then((response) => {
-            if (response.status == 200) {
-              return alert('Order berhasil')
-            }
+            router.push({ name: 'payment', params: { orderId: response.data.data.order.order_id } })
           })
           .catch((error) => {
             console.log(error)
-            return alert(error.response.data.message)
+            return alert(error)
           })
       } catch (err) {
         console.log(err.message)

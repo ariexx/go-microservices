@@ -6,4 +6,5 @@ message Payment {
   uint32 id = 1;
   string name = 2;
   string banner = 3;
+  string description = 4;
 }

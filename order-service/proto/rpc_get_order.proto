@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "order-service/pb";
+
+import "order.proto";
+
+message GetOrderRequest {
+  string order_id = 1;
+}
+
+message GetOrderResponse {
+  Order order = 1;
+}

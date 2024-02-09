@@ -24,6 +24,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 		Quantity:  int(req.GetQuantity()),
 		Price:     int(req.GetPrice()),
 		Total:     int(req.GetTotal()),
+		PaymentID: int(req.GetPaymentId()),
 	}
 
 	//call repository
@@ -39,6 +40,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 		Quantity:  1,
 		Price:     int(orderRequest.Price),
 		Total:     int(orderRequest.Total),
+		PaymentID: int(orderRequest.PaymentID),
 	}
 
 	//save order with order service
@@ -62,6 +64,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (*
 			Quantity:  int32(createOrder.Quantity),
 			Price:     int32(createOrder.Price),
 			Total:     int32(createOrder.Total),
+			PaymentId: int32(createOrder.PaymentID),
 		},
 	}, nil
 }

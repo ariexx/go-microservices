@@ -2,6 +2,7 @@ syntax = "proto3";
 package pb;
 
 import "rpc_create_order.proto";
+import "rpc_get_order.proto";
 import "google/api/annotations.proto";
 option go_package = "order-service/pb";
 
@@ -10,6 +11,12 @@ service OrderService {
     option (google.api.http) = {
       post: "/v1/order/create"
       body: "*"
+    };
+  }
+
+  rpc GetOrder (GetOrderRequest) returns (GetOrderResponse) {
+    option (google.api.http) = {
+      get: "/v1/order/{order_id}"
     };
   }
 }

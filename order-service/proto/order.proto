@@ -11,4 +11,5 @@ message Order {
   int32 price = 5;
   int32 total = 6;
   string player_id = 7;
+  int32 payment_id = 8;
 }

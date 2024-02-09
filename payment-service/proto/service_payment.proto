@@ -11,4 +11,10 @@ service PaymentService {
       get: "/v1/payments"
     };
   }
+
+  rpc GetPayment(GetPaymentRequest) returns (GetPaymentResponse) {
+    option (google.api.http) = {
+      get: "/v1/payments/{id}"
+    };
+  }
 }

@@ -8,6 +8,7 @@ import (
 
 type OrderService interface {
 	CreateOrder(ctx context.Context, order *entity.CreateOrder) (entity.Order, error)
+	FindOrder(ctx context.Context, orderId string) (entity.Order, error)
 }
 
 type orderService struct {
@@ -22,6 +23,14 @@ func NewOrderService(repo repository.OrderRepository) OrderService {
 
 func (u *orderService) CreateOrder(ctx context.Context, order *entity.CreateOrder) (entity.Order, error) {
 	user, err := u.repo.CreateOrder(ctx, order)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+func (u *orderService) FindOrder(ctx context.Context, orderId string) (entity.Order, error) {
+	user, err := u.repo.FindOrderByOrderID(ctx, orderId)
 	if err != nil {
 		return user, err
 	}

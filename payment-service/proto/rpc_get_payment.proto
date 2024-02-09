@@ -9,4 +9,12 @@ message GetAllPaymentResponse {
   repeated Payment payments = 1;
 }
 
+message GetPaymentRequest {
+  uint32 id = 1;
+}
+
+message GetPaymentResponse {
+  Payment payment = 1;
+}
+
 message GetAllEmpty {}

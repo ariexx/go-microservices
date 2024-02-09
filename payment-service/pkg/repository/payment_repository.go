@@ -8,6 +8,7 @@ import (
 
 type PaymentChannelRepository interface {
 	FindAll() ([]*dto.PaymentChannelResponse, error)
+	FindByID(id int) (*dto.PaymentChannelResponse, error)
 }
 
 type paymentChannelRepository struct {
@@ -26,4 +27,14 @@ func (p *paymentChannelRepository) FindAll() ([]*dto.PaymentChannelResponse, err
 		return nil, err
 	}
 	return paymentChannels, nil
+}
+
+func (p *paymentChannelRepository) FindByID(id int) (*dto.PaymentChannelResponse, error) {
+	var paymentChannel dto.PaymentChannelResponse
+	var paymentModel model.PaymentChannel
+	err := p.db.Model(&paymentModel).Where("id = ?", id).First(&paymentChannel).Error
+	if err != nil {
+		return nil, err
+	}
+	return &paymentChannel, nil
 }

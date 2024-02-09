@@ -24,9 +24,10 @@ func (s *Server) GetPayments(ctx context.Context, req *pb.GetAllEmpty) (*pb.GetA
 
 	for _, payment := range payments {
 		pbPayment = append(pbPayment, &pb.Payment{
-			Id:     uint32(payment.ID),
-			Name:   payment.Name,
-			Banner: payment.Banner,
+			Id:          uint32(payment.ID),
+			Name:        payment.Name,
+			Banner:      payment.Banner,
+			Description: payment.Description,
 		})
 	}
 
@@ -34,4 +35,25 @@ func (s *Server) GetPayments(ctx context.Context, req *pb.GetAllEmpty) (*pb.GetA
 		Payments: pbPayment,
 	}, nil
 
+}
+
+func (s *Server) GetPayment(ctx context.Context, req *pb.GetPaymentRequest) (*pb.GetPaymentResponse, error) {
+	//call repository
+	paymentRepository := repository.NewPaymentChannelRepository(s.db)
+	paymentService := service.NewPaymentService(paymentRepository)
+
+	//get payment by id
+	payment, err := paymentService.FindByID(int(req.Id))
+	if err != nil {
+		log.Println("Error while getting payment by id : ", err)
+		return nil, err
+	}
+
+	return &pb.GetPaymentResponse{
+		Payment: &pb.Payment{
+			Id:     uint32(payment.ID),
+			Name:   payment.Name,
+			Banner: payment.Banner,
+		},
+	}, nil
 }
