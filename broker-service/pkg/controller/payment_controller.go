@@ -5,6 +5,7 @@ import (
 	"broker_service/pkg/services"
 	"github.com/gofiber/fiber/v2"
 	"log"
+	"strconv"
 )
 
 type PaymentController interface {
@@ -23,6 +24,7 @@ func NewPaymentController(paymentService services.PaymentService) PaymentControl
 
 func (p *paymentController) Route(app fiber.Router) {
 	app.Get("/payments", p.GetAll)
+	app.Get("/payment/:id", p.GetByID)
 }
 
 func (p *paymentController) GetAll(ctx *fiber.Ctx) error {
@@ -40,12 +42,11 @@ type getPaymentById struct {
 }
 
 func (p *paymentController) GetByID(ctx *fiber.Ctx) error {
-	id := getPaymentById{}
-	if err := ctx.ParamsParser(&id); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(helper.ResponseErrorHandler(err.Error()))
-	}
+	id := ctx.Params("id")
 
-	payment, err := p.paymentService.FindById(id.id)
+	idInt, _ := strconv.Atoi(id)
+
+	payment, err := p.paymentService.FindById(idInt)
 	if err != nil {
 		log.Print("Error when calling payment service : ", err)
 		return ctx.Status(fiber.StatusInternalServerError).JSON(helper.ResponseErrorHandler(err.Error()))

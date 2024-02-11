@@ -82,8 +82,9 @@ func (p *paymentService) FindById(id int) (*dto.PaymentResponse, error) {
 	}
 
 	return &dto.PaymentResponse{
-		ID:     int64(res.Payment.GetId()),
-		Name:   res.Payment.GetName(),
-		Banner: res.Payment.GetBanner(),
+		ID:          int64(res.Payment.GetId()),
+		Name:        res.Payment.GetName(),
+		Banner:      res.Payment.GetBanner(),
+		Description: res.Payment.GetDescription(),
 	}, nil
 }

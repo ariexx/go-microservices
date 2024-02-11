@@ -74,6 +74,7 @@ export default {
             payment_id: this.payment_id
           })
           .then((response) => {
+            alert('Order berhasil dibuat')
             router.push({ name: 'payment', params: { orderId: response.data.data.order.order_id } })
           })
           .catch((error) => {

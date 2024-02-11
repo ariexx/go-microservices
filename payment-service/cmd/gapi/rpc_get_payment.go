@@ -51,9 +51,10 @@ func (s *Server) GetPayment(ctx context.Context, req *pb.GetPaymentRequest) (*pb
 
 	return &pb.GetPaymentResponse{
 		Payment: &pb.Payment{
-			Id:     uint32(payment.ID),
-			Name:   payment.Name,
-			Banner: payment.Banner,
+			Id:          uint32(payment.ID),
+			Name:        payment.Name,
+			Banner:      payment.Banner,
+			Description: payment.Description,
 		},
 	}, nil
 }
