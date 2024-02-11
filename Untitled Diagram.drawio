@@ -1,9 +1,32 @@
-<mxfile host="app.diagrams.net" modified="2024-02-11T14:50:13.347Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0" version="22.1.21" etag="r4B8l3HKUjPvy_NQi4w9" type="github">
+<mxfile host="app.diagrams.net" modified="2024-02-11T14:53:21.376Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:122.0) Gecko/20100101 Firefox/122.0" etag="tZIkVngcB1n8JVC7yaM2" version="22.1.21" type="github">
   <diagram name="Page-1" id="fReUNK716amQQ9e7FjBb">
-    <mxGraphModel>
+    <mxGraphModel dx="857" dy="566" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
+        <mxCell id="tRsZcf1oFl6R3dfrqybM-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="tRsZcf1oFl6R3dfrqybM-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="360" y="330.0000000000001" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="tRsZcf1oFl6R3dfrqybM-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tRsZcf1oFl6R3dfrqybM-1" target="tRsZcf1oFl6R3dfrqybM-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tRsZcf1oFl6R3dfrqybM-1" value="Guest" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" vertex="1" parent="1">
+          <mxGeometry x="180" y="300" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tRsZcf1oFl6R3dfrqybM-4" value="&lt;div&gt;Halaman Home&lt;/div&gt;" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="365" y="290" width="95" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tRsZcf1oFl6R3dfrqybM-5" value="Halaman Order" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="365" y="380" width="95" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tRsZcf1oFl6R3dfrqybM-6" value="Halaman Pembayaran" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="365" y="470" width="95" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tRsZcf1oFl6R3dfrqybM-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.001;entryY=0.578;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="tRsZcf1oFl6R3dfrqybM-1" target="tRsZcf1oFl6R3dfrqybM-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
