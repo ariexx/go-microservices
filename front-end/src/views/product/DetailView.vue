@@ -79,7 +79,7 @@ export default {
           })
           .catch((error) => {
             console.log(error)
-            return alert(error)
+            return alert("Order service tidak aktif")
           })
       } catch (err) {
         console.log(err.message)
